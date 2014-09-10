@@ -1,0 +1,57 @@
+#include <map>
+#include <set>
+#include <list>
+#include <queue>
+#include <stack>
+#include <cmath>
+#include <ctime>
+#include <vector>
+#include <bitset>
+#include <cstdio>
+#include <string>
+#include <numeric>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#include <functional>
+using namespace std;
+typedef long long  ll;
+typedef unsigned long long ull;
+
+int dx[4]={-1,1,0,0};
+int dy[4]={0,0,-1,1};//up down left right
+bool inmap(int x,int y,int n,int m){if(x<1||x>n||y<1||y>m)return false;return true;}
+int hashmap(int x,int y,int m){return (x-1)*m+y;}
+
+#define eps 1e-8
+#define inf 0x7fffffff
+#define debug puts("BUG")
+#define lson l,m,rt<<1
+#define rson m+1,r,rt<<1|1
+#define read freopen("in.txt","r",stdin)
+#define write freopen("out.txt","w",stdout)
+#define N 51
+#define M 200001
+
+int main()
+{
+    //read;
+    int n,m;
+    while(~scanf("%d%d",&n,&m))
+    {
+        int row=(1<<n),col=(1<<m);
+        for(int i=0;i<row;++i)
+        {
+            int row_gray=(i^(i>>1))<<m;
+            for(int j=0;j<col;++j)
+            {
+                if(j)printf(" ");
+                int col_gray=j^(j>>1);
+                printf("%d",row_gray|col_gray);
+            }
+            puts("");
+        }
+    }
+    return 0;
+}
