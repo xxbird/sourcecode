@@ -1,0 +1,125 @@
+#include <map>
+#include <set>
+#include <list>
+#include <queue>
+#include <stack>
+#include <cmath>
+#include <ctime>
+#include <vector>
+#include <bitset>
+#include <cstdio>
+#include <string>
+#include <numeric>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <algorithm>
+#include <functional>
+using namespace std;
+typedef long long  ll;
+typedef unsigned long long ull;
+
+int dx[4]={-1,1,0,0};
+int dy[4]={0,0,-1,1};//up down left right
+bool inmap(int x,int y,int n,int m){if(x<1||x>n||y<1||y>m)return false;return true;}
+int hashmap(int x,int y,int m){return (x-1)*m+y;}
+
+#define eps 1e-8
+#define inf 0x7fffffff
+#define debug puts("BUG")
+#define lson l,m,rt<<1
+#define rson m+1,r,rt<<1|1
+#define read freopen("in.txt","r",stdin)
+#define write freopen("out.txt","w",stdout)
+#define maxn (1<<10)
+vector<int>vc;
+vector<int>xx[maxn];
+ll dp[2][28562][101];
+int num[maxn];
+int mp[1<<20];
+ll ten[101]=
+{
+    1,100,4662,135040,2732909,41199404,481719518,4491423916,
+    34075586550,213628255072,1120204619108,4961681221524,18715619717199,
+    60541371615660,168976761361446,409191804533576,864172675710439,1599730843649564,
+    2609262108838924,3770687313420780,4857550050070531,5616928666465104,
+    5874943705896600,5604501518609804,4917655076255841,3999855946779732,
+    3034690618677388,2156485957257040,1437827591264317,899278231344296,
+    526753407546620,288274613750624,146990556682887,69626509814580,30542906352994,
+    12366448408056,4604442057431,1569983914256,487876545370,
+    137395261280,34831261750,7884855000,1578162590,275861904,41455966,
+    5246412,543534,44244,2652,104,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+};
+int main()
+{
+    //read;//write;
+    int n,k;
+    while(~scanf("%d%d",&n,&k))
+    {
+        if(n==10)
+        {
+            printf("%I64d\n",ten[k]);
+            continue;
+        }
+        int bd=(1<<n);
+        vc.clear();
+        memset(num,0,sizeof(num));
+        memset(mp,-1,sizeof(mp));
+        for(int i=0;i<bd;++i)
+        {
+            int t=i;
+            while(t)
+            {
+                if(t&1)++num[i];
+                t>>=1;
+            }
+        }
+        for(int i=0;i<bd;++i)
+            for(int j=0;j<bd;++j)
+                if((i&(j<<2))==0&&(i&(j>>2))==0)
+                {
+                    int t=(i<<n)|j;
+                    mp[t]=(int)vc.size();
+                    vc.push_back(t);
+                }
+        for(int i=0;i<bd;++i)
+        {
+            xx[i].clear();
+            for(int j=0;j<(int)vc.size();++j)
+            {
+                int k1=vc[j]>>n;
+                int k2=vc[j]%bd;
+                if((i&(k1<<1))==0&&(i&(k1>>1))==0)
+                    if((i&(k2<<2))==0&&(i&(k2>>2))==0)
+                        xx[i].push_back(j);
+            }
+        }
+        memset(dp,0,sizeof(dp));
+        dp[0][0][0]=1;
+        for(int i=1;i<=n;++i)
+        {
+            int a=i&1,b=1-a;
+            memset(dp[a],0,sizeof(dp[a]));
+            for(int j=0;j<bd;++j)
+                for(size_t l=0;l<xx[j].size();++l)
+                    for(int t=0;t+num[j]<=k;++t)
+                    {
+                        int x=mp[((vc[xx[j][l]]%bd)<<n)|j];
+                        dp[a][x][t+num[j]]+=dp[b][xx[j][l]][t];
+                    }
+//            for(size_t j=0;j<vc.size();++j)
+//                for(int l=0;l<=k;++l)
+//                    if(dp[a][j][l])printf("%d %d %d\n",vc[j],l,dp[a][j][l]);
+//            debug;
+        }
+//        printf("%d\n",vc.size());
+
+        ll ans=0;
+        for(size_t i=0;i<vc.size();++i)
+            ans+=dp[n&1][i][k];
+        printf("%I64d\n",ans);
+
+    }
+    return 0;
+}
